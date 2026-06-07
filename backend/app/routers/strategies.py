@@ -6,6 +6,7 @@ from app.models.user import User
 from app.models.strategy import Strategy, Result
 from app.schemas.strategy import StrategyCreate, StrategyResponse, ResultResponse
 from app.services.auth import get_current_user
+from app.worker.tasks import run_backtest_task
 
 router = APIRouter(prefix="/strategies", tags=["strategies"])
 
@@ -22,7 +23,7 @@ def submit_strategy(data: StrategyCreate, user: User = Depends(get_current_user)
     db.add(strategy)
     db.commit()
     db.refresh(strategy)
-    # TODO: trigger celery task here
+    run_backtest_task.delay(str(strategy.id))
     return strategy
 
 
