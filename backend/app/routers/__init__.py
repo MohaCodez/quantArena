@@ -1,1 +1,1 @@
-from app.routers import auth, competitions, strategies
+from app.routers import auth, competitions, strategies, leaderboard
