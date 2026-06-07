@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine, Base
 from app.models import User, Dataset, Competition, Strategy, Result  # noqa: F401
+from app.routers import auth, competitions, strategies
 
 
 @asynccontextmanager
@@ -22,6 +23,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth.router)
+app.include_router(competitions.router)
+app.include_router(strategies.router)
 
 
 @app.get("/health")
