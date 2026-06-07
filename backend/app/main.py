@@ -1,7 +1,19 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="QuantArena", version="0.1.0")
+from app.database import engine, Base
+from app.models import User, Dataset, Competition, Strategy, Result  # noqa: F401
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    yield
+
+
+app = FastAPI(title="QuantArena", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
